@@ -41,6 +41,8 @@ NB if you are running this on your own computer rather than the azure labs that 
 ```const db = require('./services/db');
 ```
 
+  * The `database.sql` file initializes the sample MySQL database when the MySQL data directory is empty.
+
 ____
 
 Useful commands:
