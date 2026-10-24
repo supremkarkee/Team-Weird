@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMP-X306 | Secure Application Architecture Gateway</title>
+  <meta name="description" content="Secure Software Development Level 6 Coursework - Architecture & Penetration Testing Dashboard">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body class="dark-theme">
+  <!-- Glowing Background Ambient Spheres -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    <!-- Header / Navbar -->
+    <header class="navbar glass-card">
+      <div class="brand">
+        <div class="shield-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">CMP-X306 <span class="badge badge-accent">SECURE CORE</span></span>
+          <span class="brand-sub">Team Weird &bull; Level 6 BEng/BSc</span>
+        </div>
+      </div>
+
+      <div class="nav-controls">
+        <div id="system-status-indicator" class="status-pill status-checking">
+          <span class="pulse-dot"></span>
+          <span id="system-status-text">Checking Core...</span>
+        </div>
+        <div id="auth-status-container" class="auth-pill">
+          <span id="current-user-badge" class="user-role-badge">GUEST</span>
+          <button id="quick-logout-btn" class="btn btn-sm btn-ghost hidden" onclick="handleLogout()">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section / Architecture Badge Banner -->
+    <section class="hero-banner glass-card">
+      <div class="hero-content">
+        <div class="hero-tagline">
+          <span class="icon-sparkle">&#9889;</span> Pre-Development Secure Architecture Baseline
+        </div>
+        <h1 class="hero-headline">Defense-in-Depth Application Gateway</h1>
+        <p class="hero-description">
+          Engineered to satisfy coursework marking criteria: Least-privilege containerization, strict CSP &amp; security headers, parameterized prepared SQL queries, cryptographic auth, role-based access control, and automated audit logging.
+        </p>
+      </div>
+
+      <div class="architecture-stats-grid">
+        <div class="stat-card">
+          <span class="stat-value text-cyan">STRIDE</span>
+          <span class="stat-label">Threat Model Ready</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value text-emerald">0 CVEs</span>
+          <span class="stat-label">SCA Supply Chain Audited</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value text-purple">12 Rounds</span>
+          <span class="stat-label">BCrypt Adaptive Hashing</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value text-amber">PoLP</span>
+          <span class="stat-label">Non-Root &amp; DB Sandbox</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Security Testing Workbench -->
+    <main class="workbench-grid">
+      <!-- Left Column: Security Control Navigation Tabs -->
+      <aside class="sidebar-nav glass-card">
+        <h3 class="nav-heading">Assessment Areas</h3>
+        <nav class="test-tabs">
+          <button class="tab-btn active" onclick="switchTab('tab-auth')">
+            <span class="tab-icon">&#128274;</span>
+            <div class="tab-info">
+              <span class="tab-title">Auth &amp; Session</span>
+              <span class="tab-sub">JWT, HttpOnly, Timing Defense</span>
+            </div>
+          </button>
+          <button class="tab-btn" onclick="switchTab('tab-access')">
+            <span class="tab-icon">&#128737;</span>
+            <div class="tab-info">
+              <span class="tab-title">Access Control &amp; RBAC</span>
+              <span class="tab-sub">Unauthenticated API Barriers</span>
+            </div>
+          </button>
+          <button class="tab-btn" onclick="switchTab('tab-xss')">
+            <span class="tab-icon">&#128187;</span>
+            <div class="tab-info">
+              <span class="tab-title">Input &amp; XSS Defense</span>
+              <span class="tab-sub">Schema &amp; Context Encoding</span>
+            </div>
+          </button>
+          <button class="tab-btn" onclick="switchTab('tab-headers')">
+            <span class="tab-icon">&#128203;</span>
+            <div class="tab-info">
+              <span class="tab-title">HTTP Headers &amp; TLS</span>
+              <span class="tab-sub">CSP, HSTS, Sniffing Defense</span>
+            </div>
+          </button>
+          <button class="tab-btn" onclick="switchTab('tab-audit')">
+            <span class="tab-icon">&#128220;</span>
+            <div class="tab-info">
+              <span class="tab-title">Audit Logging</span>
+              <span class="tab-sub">Tamper-evident Security Trail</span>
+            </div>
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Center / Right Panel: Active Workbench Tab Content -->
+      <section class="workbench-content glass-card">
+        <!-- TAB 1: Authentication & Session -->
+        <div id="tab-auth" class="tab-content active">
+          <div class="tab-header">
+            <div>
+              <h2>Authentication &amp; Session Verification</h2>
+              <p class="section-sub">Test login authentication with timing-attack mitigation and secure cookie delivery.</p>
+            </div>
+            <div class="badge badge-outline">Area 1: Auth &amp; Session</div>
+          </div>
+
+          <div class="two-column-form">
+            <!-- Login Form -->
+            <div class="card-inner">
+              <h3>Login with Seed Credentials</h3>
+              <p class="hint-text">Pre-seeded accounts: <code>admin / AdminPassword123!</code> or <code>alice / AlicePassword123!</code></p>
+              <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                  <label for="login-username">Username</label>
+                  <input type="text" id="login-username" class="form-input" placeholder="admin" value="admin" required>
+                </div>
+                <div class="form-group">
+                  <label for="login-password">Password</label>
+                  <input type="password" id="login-password" class="form-input" placeholder="••••••••••••" value="AdminPassword123!" required>
+                </div>
+                <div class="button-group">
+                  <button type="submit" class="btn btn-primary">Authenticate (Login)</button>
+                  <button type="button" class="btn btn-secondary" onclick="simulateFailedLogin()">Simulate Bad Password</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Register Form -->
+            <div class="card-inner">
+              <h3>Register New Account</h3>
+              <p class="hint-text">Enforces password complexity (min 8 chars, 1 uppercase, 1 lowercase, 1 number).</p>
+              <form id="register-form" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                  <label for="reg-username">Username</label>
+                  <input type="text" id="reg-username" class="form-input" placeholder="bob_security" required>
+                </div>
+                <div class="form-group">
+                  <label for="reg-email">Email</label>
+                  <input type="email" id="reg-email" class="form-input" placeholder="bob@roesecurity.ac.uk" required>
+                </div>
+                <div class="form-group">
+                  <label for="reg-password">Password</label>
+                  <input type="password" id="reg-password" class="form-input" placeholder="SecurePass99!" required>
+                </div>
+                <button type="submit" class="btn btn-accent">Create Secure User</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Access Control & RBAC -->
+        <div id="tab-access" class="tab-content">
+          <div class="tab-header">
+            <div>
+              <h2>Unauthenticated Access &amp; RBAC Probe</h2>
+              <p class="section-sub">Demonstrates API boundary defense against unauthenticated visitors and role elevation.</p>
+            </div>
+            <div class="badge badge-outline">Area 2: Unauthenticated Access</div>
+          </div>
+
+          <div class="probe-grid">
+            <div class="probe-card">
+              <div class="probe-header">
+                <span class="method get">GET</span>
+                <code>/api/public/info</code>
+              </div>
+              <p>Public metadata endpoint accessible without authentication tokens.</p>
+              <button class="btn btn-sm btn-secondary" onclick="testEndpoint('/api/public/info', 'GET')">Test Public Endpoint</button>
+            </div>
+
+            <div class="probe-card">
+              <div class="probe-header">
+                <span class="method get">GET</span>
+                <code>/api/user/data</code>
+              </div>
+              <p>Protected resource. Fails with <code>401 Unauthorized</code> if no valid JWT is supplied.</p>
+              <button class="btn btn-sm btn-primary" onclick="testEndpoint('/api/user/data', 'GET')">Test User Endpoint</button>
+            </div>
+
+            <div class="probe-card">
+              <div class="probe-header">
+                <span class="method get">GET</span>
+                <code>/api/admin/users</code>
+              </div>
+              <p>Administrative endpoint. Requires active authentication AND role <code>ADMIN</code> (403 for standard users).</p>
+              <button class="btn btn-sm btn-accent" onclick="testEndpoint('/api/admin/users', 'GET')">Test Admin RBAC</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Input & XSS Defense -->
+        <div id="tab-xss" class="tab-content">
+          <div class="tab-header">
+            <div>
+              <h2>Basic Input Validation &amp; XSS Defense</h2>
+              <p class="section-sub">Probe the input pipeline with XSS injection payloads and observe automated contextual encoding.</p>
+            </div>
+            <div class="badge badge-outline">Area 3: Input Validation &amp; XSS</div>
+          </div>
+
+          <div class="card-inner">
+            <h3>XSS Injection Probe</h3>
+            <p class="hint-text">Submit hostile scripts (e.g. <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>) to test defense.</p>
+            <div class="form-group">
+              <label for="xss-payload">Test Input / Payload</label>
+              <input type="text" id="xss-payload" class="form-input" value="<script>alert('XSS Exploit Probe')</script>">
+            </div>
+            <div class="button-group">
+              <button class="btn btn-primary" onclick="testSafeEcho()">Send to Secure /api/echo/:name</button>
+              <button class="btn btn-secondary" onclick="setPayload('&lt;img src=x onerror=alert(&quot;DOM_XSS&quot;)&gt;')">Use &lt;img onerror&gt;</button>
+              <button class="btn btn-secondary" onclick="setPayload('NormalUser_Alice')">Use Safe String</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: HTTP Headers & TLS -->
+        <div id="tab-headers" class="tab-content">
+          <div class="tab-header">
+            <div>
+              <h2>HTTP Security Headers &amp; Protocol Enforcement</h2>
+              <p class="section-sub">Inspect response headers actively sent by Helmet and reverse proxy defenses.</p>
+            </div>
+            <div class="badge badge-outline">Area 4: Security Headers</div>
+          </div>
+
+          <div class="button-group" style="margin-bottom: 1.5rem;">
+            <button class="btn btn-primary" onclick="inspectHeaders()">Inspect Live Security Headers</button>
+          </div>
+
+          <div class="headers-table-container">
+            <table class="headers-table">
+              <thead>
+                <tr>
+                  <th>Header Name</th>
+                  <th>Observed Value</th>
+                  <th>Security Impact</th>
+                </tr>
+              </thead>
+              <tbody id="headers-table-body">
+                <tr>
+                  <td colspan="3" class="text-center text-muted">Click "Inspect Live Security Headers" to analyze response.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 5: Audit Logging -->
+        <div id="tab-audit" class="tab-content">
+          <div class="tab-header">
+            <div>
+              <h2>Tamper-Evident Audit Logging</h2>
+              <p class="section-sub">Inspect centralized security logs for authentication, authorization failures, and system events.</p>
+            </div>
+            <div class="badge badge-outline">Repudiation &amp; Monitoring</div>
+          </div>
+
+          <div class="button-group" style="margin-bottom: 1rem;">
+            <button class="btn btn-accent" onclick="loadAuditLogs()">Fetch Audit Logs (Requires Admin)</button>
+          </div>
+
+          <div class="audit-log-container">
+            <div id="audit-logs-display" class="log-terminal">
+              <span class="text-muted">Awaiting log query (Login as 'admin' first to view database audit logs)...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-Time Request / Response Terminal -->
+        <div class="live-console-card">
+          <div class="console-header">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title">LIVE API TELEMETRY &amp; RESPONSE INSPECTOR</span>
+            <span id="response-status-badge" class="badge badge-sm badge-outline">IDLE</span>
+          </div>
+          <pre id="console-output" class="console-body">// Terminal ready. Perform an assessment action above to inspect JSON response & HTTP status.</pre>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-bar glass-card">
+      <div class="footer-left">
+        <span>CMP-X306 Secure Software Development &bull; Coursework Scaffolding v1.0</span>
+      </div>
+      <div class="footer-right">
+        <span>Docker Containerized &bull; MySQL 8.0 &bull; Node.js Express &bull; Level 6</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

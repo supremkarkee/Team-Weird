@@ -1,8 +1,22 @@
-MYSQL_HOST=localhost
-MYSQL_USER=admin
-MYSQL_PASS=password
-MYSQL_ROOT_PASSWORD=password
-MYSQL_DATABASE=sd2-db
-MYSQL_ROOT_USER=root
-DB_CONTAINER=db
+# Application Environment Configuration
+PORT=3000
+NODE_ENV=development
+
+# MySQL Database Configuration (Least-Privilege App User)
+DB_HOST=db
 DB_PORT=3306
+DB_NAME=sd2-db
+DB_USER=app_user
+DB_PASSWORD=SecureAppPassword123!
+
+# MySQL Root Configuration (Used only for initial provisioning in docker-entrypoint)
+MYSQL_ROOT_USER=root
+MYSQL_ROOT_PASSWORD=RootSuperSecurePassword456!
+MYSQL_DATABASE=sd2-db
+
+# Cryptographic & Session Secrets
+JWT_SECRET=super_secret_jwt_signing_key_cmp_x306_secure_development_2026!
+SESSION_SECRET=session_encryption_secret_key_cmp_x306_team_weird_2026!
+
+# Network & CORS Security
+CORS_ORIGIN=http://localhost:3000

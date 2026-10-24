@@ -1,20 +1,37 @@
-# Base image to use
-FROM node:latest
+# ==========================================
+# Hardened Multi-Stage Container Image
+# CMP-X306 Secure Software Development
+# ==========================================
 
-# set a working directory
-WORKDIR /src
+FROM node:20-alpine
 
-# Copy across project configuration information
-# Install application dependencies
-COPY package*.json /src/
+# Set non-root environment & production settings
+ENV NODE_ENV=production
+WORKDIR /usr/src/app
 
-# Ask npm to install the dependencies
-RUN npm install -g supervisor && npm install && npm install supervisor
+# Install security patches & curl for healthcheck
+RUN apk --no-cache upgrade && \
+    apk --no-cache add curl
 
-# Copy across all our files
-COPY . /src
+# Copy dependency manifests first for cached layer installation
+COPY package*.json ./
 
-# Expose our application port (3000)
+# Install only production dependencies cleanly
+RUN npm ci --only=production && \
+    npm cache clean --force
+
+# Copy application source code
+COPY --chown=node:node . .
+
+# Switch to unprivileged 'node' user (Principle of Least Privilege - PoLP)
+USER node
+
+# Expose only application port
 EXPOSE 3000
 
+# Docker healthcheck probe against the /health endpoint
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
 
+# Default execution entrypoint
+CMD ["node", "index.js"]
