@@ -1,60 +1,63 @@
-# MySQL, PHPMyAdmin and Node.js (ready for Express development)
+# Setting up and running the skeleton
 
-This will install Mysql and phpmyadmin (including all dependencies to run Phpmyadmin) AND node.js
+## First-time setup
 
-This receipe is for development - Node.js is run in using supervisor: changes to any file in the app will trigger a rebuild automatically.
+1. **Copy the skeleton files into the root of the repository**, next to CONTRIBUTING.md, CLAUDE.md, AGENTS.md and `docs/reference-feature-vehicles.md`.
 
-For security, this receipe uses a .env file for credentials.  A sample is provided in the env-sample file. If using these files for a fresh project, copy the env-sample file to a file called .env.  Do NOT commit the changed .env file into your new project for security reasons (in the node package its included in .gitignore so you can't anyway)
+2. **Put the mock payment gateway in `/gateway`.** It needs its own `Dockerfile` and must listen on port 4000 inside its container (or change `GATEWAY_URL` and the `expose` line in `docker-compose.yml` to match). It reads the shared `GATEWAY_SECRET` from `.env`.
 
-In node.js, we use the MySQl2 packages (to avoid problems with MySQL8) and the dotenv package to read the environment variables.
+3. **Create your `.env`:**
 
-Local files are mounted into the container using the 'volumes' directive in the docker-compose.yml for ease of development.
+   ```
+   cp .env.example .env
+   ```
 
-### Super-quickstart your new project:
+   Fill in `POSTGRES_PASSWORD`, put the same password in place of `CHANGE_ME` in both database URLs, and set `SESSION_SECRET` and `GATEWAY_SECRET` to long random strings. Every developer has their own `.env`; it is never committed.
 
-* Make sure that you don't have any other containers running usind docker ps
-* run ```docker-compose up --build```
+4. **Start everything:**
 
-#### Visit phphmyadmin at:
+   ```
+   docker compose up --build
+   ```
 
-http://localhost:8081/
+5. **Open:**
 
-#### Visit your express app at:
+   | What | Address |
+   | --- | --- |
+   | Customer portal | http://app.localhost:3000 |
+   | Staff portal | http://staff.localhost:3000 |
+   | Emails sent by the app (Mailpit) | http://localhost:8025 |
 
-http://localhost:3000
+   If your browser cannot open the `.localhost` addresses, add these two lines to your hosts file (`/etc/hosts` on macOS and Linux, `C:\Windows\System32\drivers\etc\hosts` on Windows):
 
-For reference, see the video at: https://roehampton.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=6f290a6b-ba94-4729-9632-adcf00ac336e
+   ```
+   127.0.0.1 app.localhost
+   127.0.0.1 staff.localhost
+   ```
 
-NB if you are running this on your own computer rather than the azure labs that has been set up for you, you will need to install the following:
+## Everyday commands
 
-* node.js  (windows: https://nodejs.org/en/download/)
-* docker desktop (for windows, this will also prompt you to install linux subsystem for windows https://docs.docker.com/desktop/windows/install/ )
+| Task | Command |
+| --- | --- |
+| Start | `docker compose up` |
+| Stop | `docker compose down` |
+| Wipe the database and start fresh | `docker compose down -v` then `docker compose up` |
+| Create a migration | `docker compose run --rm app npm run migrate:create -- <name>` |
+| Run migrations | `docker compose run --rm app npm run migrate` |
+| Seed development data | `docker compose run --rm app npm run seed` |
+| Run tests | `docker compose run --rm app npm test` |
+| Open a database shell | `docker compose exec db psql -U garage garage` |
 
-### Whats provided in these scaffolding files?
+## After someone adds a dependency
 
+The container keeps its own `node_modules`, so after pulling a change to `package.json`, rebuild:
 
-  * A docker setup which will provide you with node.js, mysql and phpmyadmin, including the configuration needed so that both node.js AND phpmyadmin can 'see' and connect to your mysql database.  If you don't use docker you'll have to set up and connect each of these components separately.
-  * A basic starting file structure for a node.js app.
-  * A package.json file that will pull in the node.js libraries required and start your app as needed.
-  * A db.js file which provides all the code needed to connect to the mysql database, using the credentials in the .env file, and which provides a query() function that can send queries to the database and receive a result.  In order to use this (ie. interact with the database, you simply need to include this file in any file you create that needs this database interaction) with the following code:
-
-```const db = require('./services/db');
+```
+docker compose up --build --renew-anon-volumes
 ```
 
-  * The `database.sql` file initializes the sample MySQL database when the MySQL data directory is empty.
+## Notes
 
-____
-
-Useful commands:
-
-Get a shell in any of the containers
-
-```bash
-docker exec -it <container name> bash -l
-```
-
-Once in the database container, you can get a MySQL CLI in the usual way
-
-```bash
-mysql -uroot -p<password> 
-```
+- **Everything is local only.** Every published port is bound to 127.0.0.1. Never change that, and never deploy this app.
+- **`npm audit` reports moderate issues in `node-pg-migrate`'s dependencies.** It is a development tool that never runs in the app itself, so CI should run `npm audit --omit=dev`.
+- **The app answers only on its two configured hosts.** Any other `Host` header gets 400. This is deliberate.

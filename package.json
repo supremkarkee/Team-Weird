@@ -1,29 +1,51 @@
 {
-  "name": "secure-app-cmp-x306",
-  "version": "1.0.0",
-  "description": "Secure Application Architecture for Level 6 Secure Software Development (CMP-X306)",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "echo \"No test specified\" && exit 0"
+  "name": "vehicle-service-management",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
   },
-  "author": "Team Weird",
-  "license": "ISC",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "migrate": "node-pg-migrate up",
+    "migrate:down": "node-pg-migrate down",
+    "migrate:create": "node-pg-migrate create --migration-file-language sql",
+    "seed": "node seeds/index.js",
+    "test": "node --test",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.5.0",
-    "helmet": "^8.0.0",
-    "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0",
-    "mysql2": "^3.12.0",
+    "argon2": "^0.45.2",
+    "csrf-sync": "^4.2.1",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.5",
+    "express-session": "^1.19.0",
+    "helmet": "^8.3.0",
+    "nodemailer": "^10.6.1",
+    "nunjucks": "^3.2.4",
+    "pg": "^8.23.1",
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
-  }
+    "eslint": "^10.15.0",
+    "node-pg-migrate": "^9.0.0",
+    "prettier": "^3.10.1",
+    "supertest": "^7.3.2"
+  },
+  "description": "This will install Mysql and phpmyadmin (including all dependencies to run Phpmyadmin) AND node.js",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/supremkarkee/Team-Weird.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/supremkarkee/Team-Weird/issues"
+  },
+  "homepage": "https://github.com/supremkarkee/Team-Weird#readme"
 }
