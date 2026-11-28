@@ -25,3 +25,10 @@ export function poundsToPence(poundsValue) {
 
     return Number(pence);
 }
+
+export function assertPence(value, { allowZero = false } = {}) {
+  if (!Number.isSafeInteger(value) || value > MAX_PENCE || value < (allowZero ? 0 : 1)) {
+    throw new RangeError('Invalid pence amount');
+  }
+  return value;
+}
