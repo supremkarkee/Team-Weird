@@ -1,46 +1,58 @@
-// Provides the one application PostgreSQL pool and the transaction wrapper used by repositories and services
+// The one PostgreSQL pool for the app, and the transaction wrapper that
+// services use. Repositories take an optional `db` (the pool or a client).
+import pg from 'pg';
+import { config } from '../config/index.js';
 
-import pg from 'pg'
-import { Pool } from pg
-import { config } from '../config/index.js'
+const { Pool } = pg;
 
-/** @type {Pool} */
-export const pool = new Pool({
-    connectionString: config.databaseUrl,
-}) // exporting once so that all repos and services share just one connection pool
+/** @type {import('pg').Pool} */
+export const pool = new Pool({ connectionString: config.databaseUrl });
+
+// An idle client can fail (for example, the database restarts).
+// Without a listener, Node would crash the whole app.
+pool.on('error', (err) => {
+  console.error('pg pool error', err.message);
+});
 
 /**
- * Run one parameterized PostgreSQL query through the application pool
+ * Run one parameterised query through the pool.
  * @param {string} text
- * @param {unknown[]} [value]
- * @returns {Promise<ImportAttributes('pg').QuertResult>}
+ * @param {unknown[]} [values]
+ * @returns {Promise<import('pg').QueryResult>}
  */
-export function query(text, values = []){
-    return pool.query(text, values);
+export function query(text, values = []) {
+  return pool.query(text, values);
 }
 
 /**
- * Run an async callback inside one PostgreSQL transaction
+ * Run `fn` inside one transaction. COMMIT if it resolves, ROLLBACK if it throws.
+ * Never call the payment gateway inside `fn` (BR-18).
  * @template T
- * @param {(client:import('pg').PoolClient) => Promise<T>} fn 
+ * @param {(client: import('pg').PoolClient) => Promise<T>} fn
  * @returns {Promise<T>}
  */
 export async function withTransaction(fn) {
-    const client = await pool.connect();
-
+  const client = await pool.connect();
+  let broken = false;
+  try {
+    await client.query('BEGIN');
+    const result = await fn(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (err) {
     try {
-        // checks out just one client then starts BEGIN
-        await client.query('BEGIN');
-
-        const result = await fn(client); // runs the callback 
-        
-        // ONLY runs commit after the callback succeeds
-        await client.query('COMMIT');
-        return result;
-    } catch (error) {
-        await client.query('ROLLBACK'); // rollback for egvery caught error
-        throw error;
-    } finally {
-        client.release(); // release the client 
+      await client.query('ROLLBACK');
+    } catch {
+      // Keep the original error. Don't return this connection to the pool.
+      broken = true;
     }
-} 
+    throw err;
+  } finally {
+    client.release(broken); // true destroys the client
+  }
+}
+
+/** Close the pool. Used by tests and on shutdown. */
+export function closePool() {
+  return pool.end();
+}

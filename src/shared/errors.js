@@ -1,63 +1,61 @@
+// Errors that services throw. The error handler turns each into a page.
+// Messages are for the server log only. They are never shown to users.
 
-
-/** An input-validation failure with field-keyed, user-safe messages */
+/** Input failed validation. `fields` maps field names to user-safe messages. */
 export class ValidationError extends Error {
-    /** @param {Record<string, string>} [fields] */
-    constructor(fields = {}) {
-        super('Invalid input');
-        this.name = 'ValidationError';
-        this.status = 400;
-
-        /** @type {Record<string, string>} */
-        this.fields = fields;
-    }
+  /** @param {Record<string, string>} [fields] */
+  constructor(fields = {}) {
+    super('Invalid input');
+    this.name = 'ValidationError';
+    this.status = 400;
+    /** @type {Record<string, string>} */
+    this.fields = fields;
+  }
 }
 
-/** The caller is authenticated but is not allowed to perform the request */
+/**
+ * The caller may not do this. Pass a short reason such as 'not_owner',
+ * 'wrong_role' or 'wrong_portal'. Never log the 403 yourself:
+ * errorHandler.js does it for every 403.
+ */
 export class ForbiddenError extends Error {
-    /** @param {string} [message] */
-    constructor(message = 'Forbidden') {
-        super(message);
-        this.name = 'ForbiddenError';
-        this.status = 403;
-    }
+  /** @param {string} [reason] */
+  constructor(reason = 'forbidden') {
+    super(reason);
+    this.name = 'ForbiddenError';
+    this.status = 403;
+  }
 }
 
-/** The requested record does not exist */
+/** The record does not exist. */
 export class NotFoundError extends Error {
-    /** @param {string} [message] */
-    constructor(message = 'Not found') {
-        super(message);
-        this.name = 'NotFoundError';
-        this.status = 404;
-    }
+  /** @param {string} [message] */
+  constructor(message = 'Not found') {
+    super(message);
+    this.name = 'NotFoundError';
+    this.status = 404;
+  }
 }
 
-/** The requested state change conflicts with the current state or business rule */
+/** The change conflicts with the current state, e.g. a guarded transition found no row. */
 export class ConflictError extends Error {
-    /** @param {string} [message] */
-    constructor(message = 'Conflict') {
-        super(message);
-        this.name = 'ConflictError';
-        this.status = 409;
-    }
+  /** @param {string} [message] */
+  constructor(message = 'Conflict') {
+    super(message);
+    this.name = 'ConflictError';
+    this.status = 409;
+  }
 }
 
-/** Checks whether an error is a PostgreSQL unique constraint violation 
+/**
+ * True if `error` is a PostgreSQL unique violation, optionally on one constraint.
  * @param {unknown} error
  * @param {string} [constraintName]
- * @return {boolean}
-*/
+ * @returns {boolean}
+ */
 export function isUniqueViolation(error, constraintName) {
-    if (!error || typeof error !== 'object') {
-        return false;
-    }
-
-    const pgError = /** @type {{code?: unknown, constraint?: unknown}} */ (error);
-
-    if (pgError.code !== "23505") {
-        return false;
-    }
-
-    return constraintName === undefined || pgError.constraint === constraintName;
+  if (!error || typeof error !== 'object') return false;
+  const pgError = /** @type {{ code?: unknown, constraint?: unknown }} */ (error);
+  if (pgError.code !== '23505') return false;
+  return constraintName === undefined || pgError.constraint === constraintName;
 }
