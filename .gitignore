@@ -119,3 +119,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# tejas // custom // do not remove below // add above // thanks!!
+docs/T-11.0-task-staging.md
