@@ -1,4 +1,4 @@
-# Entity relationship diagram v0.2
+# Entity relationship diagram v0.1
 
 The project's data model, built section by section and agreed with the team before each section is written here. The database is PostgreSQL. Every table uses a UUID primary key, and every rule the database can enforce is noted beside the entity.
 
@@ -386,7 +386,7 @@ erDiagram
     SECURITY_EVENT {
         uuid id PK
         timestamp occurred_at
-        enum event_type "LOGIN_SUCCESS, LOGIN_FAILED, LOCKOUT, MFA_FAILED, ..."
+        enum event_type "LOGIN_SUCCESS, LOGIN_FAILED, LOCKOUT, MFA_FAILED, PASSWORD_CHANGED, EMAIL_CHANGED, SESSION_REVOKED, ACCESS_DENIED, RATE_LIMITED, BREAK_GLASS_LOGIN"
         uuid user_id FK "null if the account is unknown"
         string attempted_identifier_hash "unknown accounts only"
         enum portal "APP, STAFF"
@@ -416,6 +416,8 @@ erDiagram
 | Deferred | Hash chain for tamper detection; in-app break-glass alerts | Later iterations. Break-glass logins are still logged as security events. |
 
 **Database-enforced rules:** INSERT and SELECT only for the application role on both tables; a trigger rejects UPDATE and DELETE; occurred\_at defaults to the database clock (BR-45).
+
+**Change log, 28 Nov 2026:** the team approved listing every SECURITY\_EVENT event type in place of "...". There are ten, one for each row of the table above: `LOGIN_SUCCESS`, `LOGIN_FAILED`, `LOCKOUT`, `MFA_FAILED`, `PASSWORD_CHANGED`, `EMAIL_CHANGED`, `SESSION_REVOKED`, `ACCESS_DENIED`, `RATE_LIMITED` and `BREAK_GLASS_LOGIN`. The shared error handler writes `ACCESS_DENIED` for every 403. The team also decided to keep a `details` column (for the 403 reason) out of scope for now, so SECURITY\_EVENT does not record why access was denied. Nothing else in the ERD changed.
 
 ## Full diagram and flowchart walkthrough
 
